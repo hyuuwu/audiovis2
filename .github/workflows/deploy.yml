@@ -1,0 +1,56 @@
+name: "Export & Deploy to itch.io"
+
+on:
+  push:
+    branches:
+      - main  # Trigger build on push to main branch
+
+env:
+  GODOT_VERSION: "4.6"  # Change to your exact Godot version (e.g., 4.2.2, 4.3)
+  EXPORT_NAME: "audioviz2" # Name of output binary files
+
+jobs:
+  export-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.6 # Matches GODOT_VERSION
+
+    strategy:
+      matrix:
+        channel: [web, windows, linux]
+        include:
+          - channel: web
+            preset: "Web"
+            build_dir: "build/web"
+          - channel: windows
+            preset: "Windows"
+            build_dir: "build/windows"
+          - channel: linux
+            preset: "Linux"
+            build_dir: "build/linux"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Godot Export Templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/build_templates/${GODOT_VERSION}.stable
+          mv /root/.local/share/godot/build_templates/${GODOT_VERSION}.stable/* ~/.local/share/godot/build_templates/${GODOT_VERSION}.stable/ 2>/dev/null || true
+
+      - name: Create Build Directories
+        run: mkdir -v -p ${{ matrix.build_dir }}
+
+      - name: Build / Export Game
+        run: godot --headless --export-release "${{ matrix.preset }}" ${{ matrix.build_dir }}/index.html
+
+      - name: Deploy to itch.io via Butler
+        uses: ManiruzzamanAkash/action-itch-publish@v1
+        with:
+          value_or_filename: ${{ matrix.build_dir }}
+          api_key: ${{ secrets.BUTLER_API_KEY }}
+          user: ${{ secrets.ITCHIO_USERNAME }}
+          game: ${{ secrets.ITCHIO_GAME }}
+          channel: ${{ matrix.channel }}
