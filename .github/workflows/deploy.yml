@@ -6,7 +6,6 @@ on:
       - main
 
 env:
-  # Set your Godot version here
   GODOT_VERSION: "4.6-stable"
   BUILD_DIR: "build/web"
 
@@ -27,24 +26,27 @@ jobs:
 
       - name: Download & Install Godot Engine & Templates
         run: |
-          # Format Godot 3 template folder name (converts '3.6.3-stable' to '3.6.3.stable')
+          # Format template folder name (converts '3.6.3-stable' to '3.6.3.stable')
           GODOT_TEMPLATE_VER=$(echo "${GODOT_VERSION}" | tr '-' '.')
 
-          # 1. Download and set up Godot Headless Binary
           mkdir -p ~/.local/bin
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux_headless.64.zip"
-          unzip "Godot_v${GODOT_VERSION}_linux_headless.64.zip"
-          mv "Godot_v${GODOT_VERSION}_linux_headless.64" ~/.local/bin/godot
+          TEMPLATE_DIR="$HOME/.local/share/godot/templates/${GODOT_TEMPLATE_VER}"
+          mkdir -p "$TEMPLATE_DIR"
+
+          # 1. Download Godot 3 Headless Binary (Corrected URL pattern)
+          wget --show-progress -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_headless.64.zip"
+          unzip -q "Godot_v${GODOT_VERSION}_headless.64.zip"
+          mv "Godot_v${GODOT_VERSION}_headless.64" ~/.local/bin/godot
           chmod +x ~/.local/bin/godot
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-          # 2. Download and set up Export Templates
-          TEMPLATE_DIR="$HOME/.local/share/godot/templates/${GODOT_TEMPLATE_VER}"
-          mkdir -p "$TEMPLATE_DIR"
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
-          unzip "Godot_v${GODOT_VERSION}_export_templates.tpz"
+          # 2. Download Export Templates
+          wget --show-progress -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -q "Godot_v${GODOT_VERSION}_export_templates.tpz"
           mv templates/* "$TEMPLATE_DIR/"
-          rm -rf templates "Godot_v${GODOT_VERSION}_export_templates.tpz" "Godot_v${GODOT_VERSION}_linux_headless.64.zip"
+
+          # Clean up
+          rm -rf templates "Godot_v${GODOT_VERSION}_export_templates.tpz" "Godot_v${GODOT_VERSION}_headless.64.zip"
 
       - name: Create Build Directory
         run: mkdir -p ${BUILD_DIR}
