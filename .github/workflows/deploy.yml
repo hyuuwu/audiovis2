@@ -39,12 +39,11 @@ jobs:
 
       - name: Build / Export Game
         run: godot --headless --export-release "${{ matrix.preset }}" ${{ matrix.build_dir }}/index.html
-
       - name: Deploy to itch.io via Butler
-        uses: ManiruzzamanAkash/action-itch-publish@v1
-        with:
-          value_or_filename: ${{ matrix.build_dir }}
-          api_key: ${{ secrets.BUTLER_API_KEY }}
-          user: ${{ secrets.ITCHIO_USERNAME }}
-          game: ${{ secrets.ITCHIO_GAME }}
-          channel: ${{ matrix.channel }}
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+          ITCH_USER: ${{ secrets.ITCHIO_USERNAME }}
+          ITCH_GAME: ${{ secrets.ITCHIO_GAME }}
+          CHANNEL: ${{ matrix.channel }}
+          PACKAGE: ${{ matrix.build_dir }}
