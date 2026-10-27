@@ -17,17 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        channel: [web, windows, linux]
+        channel: [web]
         include:
           - channel: web
             preset: "Web"
             build_dir: "build/web"
-          - channel: windows
-            preset: "Windows"
-            build_dir: "build/windows"
-          - channel: linux
-            preset: "Linux"
-            build_dir: "build/linux"
 
     steps:
       - name: Checkout Repository
