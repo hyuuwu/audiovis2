@@ -1,27 +1,18 @@
-name: "Export & Deploy to itch.io"
+name: "Export & Deploy Web to itch.io"
 
 on:
   push:
     branches:
-      - main  # Trigger build on push to main branch
+      - main
 
 env:
-  GODOT_VERSION: "4.6"  # Change to your exact Godot version (e.g., 4.2.2, 4.3)
-  EXPORT_NAME: "audioviz2" # Name of output binary files
+  # Set your Godot version here
+  GODOT_VERSION: "4.6-stable"
+  BUILD_DIR: "build/web"
 
 jobs:
-  export-and-deploy:
+  export-and-deploy-web:
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.6 # Matches GODOT_VERSION
-
-    strategy:
-      matrix:
-        channel: [web]
-        include:
-          - channel: web
-            preset: "Web"
-            build_dir: "build/web"
 
     steps:
       - name: Checkout Repository
@@ -29,21 +20,43 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup Godot Export Templates
+      - name: Install System Dependencies
         run: |
-          mkdir -v -p ~/.local/share/godot/build_templates/${GODOT_VERSION}.stable
-          mv /root/.local/share/godot/build_templates/${GODOT_VERSION}.stable/* ~/.local/share/godot/build_templates/${GODOT_VERSION}.stable/ 2>/dev/null || true
+          sudo apt-get update
+          sudo apt-get install -y libfontconfig1 unzip wget
 
-      - name: Create Build Directories
-        run: mkdir -v -p ${{ matrix.build_dir }}
+      - name: Download & Install Godot Engine & Templates
+        run: |
+          # Format Godot 3 template folder name (converts '3.6.3-stable' to '3.6.3.stable')
+          GODOT_TEMPLATE_VER=$(echo "${GODOT_VERSION}" | tr '-' '.')
 
-      - name: Build / Export Game
-        run: godot --headless --export-release "${{ matrix.preset }}" ${{ matrix.build_dir }}/index.html
-      - name: Deploy to itch.io via Butler
+          # 1. Download and set up Godot Headless Binary
+          mkdir -p ~/.local/bin
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux_headless.64.zip"
+          unzip "Godot_v${GODOT_VERSION}_linux_headless.64.zip"
+          mv "Godot_v${GODOT_VERSION}_linux_headless.64" ~/.local/bin/godot
+          chmod +x ~/.local/bin/godot
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+          # 2. Download and set up Export Templates
+          TEMPLATE_DIR="$HOME/.local/share/godot/templates/${GODOT_TEMPLATE_VER}"
+          mkdir -p "$TEMPLATE_DIR"
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip "Godot_v${GODOT_VERSION}_export_templates.tpz"
+          mv templates/* "$TEMPLATE_DIR/"
+          rm -rf templates "Godot_v${GODOT_VERSION}_export_templates.tpz" "Godot_v${GODOT_VERSION}_linux_headless.64.zip"
+
+      - name: Create Build Directory
+        run: mkdir -p ${BUILD_DIR}
+
+      - name: Export Web Game
+        run: godot --headless --export-release "Web" ${BUILD_DIR}/index.html
+
+      - name: Publish to itch.io via Butler
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
-          ITCH_USER: ${{ secrets.ITCHIO_USERNAME }}
+          CHANNEL: web
           ITCH_GAME: ${{ secrets.ITCHIO_GAME }}
-          CHANNEL: ${{ matrix.channel }}
-          PACKAGE: ${{ matrix.build_dir }}
+          ITCH_USER: ${{ secrets.ITCHIO_USERNAME }}
+          PACKAGE: ${{ env.BUILD_DIR }}
