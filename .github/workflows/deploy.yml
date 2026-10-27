@@ -1,64 +1,61 @@
-name: "Export & Deploy Web to itch.io"
-
+# Ad Maiorem Dei Gloriam!
+# Credits: https://medium.com/@tarapogancev/publish-godot-4-games-to-itch-io-with-github-actions-game-dev-ci-cd-9944106f6515?sk=f50e6843e838c538e7d18d5fb5a386f2
+# valeu antcade <3
+name: "Export to web"
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
-  GODOT_VERSION: "4.6-stable"
-  BUILD_DIR: "build/web"
+  GODOT_VERSION: 4.6
+  EXPORT_NAME: audioviz2
+  PROJECT_PATH: .
 
 jobs:
-  export-and-deploy-web:
+  export-web:
+    name: Web Export
     runs-on: ubuntu-latest
-
+    container:
+      image: barichello/godot-ci:4.6
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
-      - name: Install System Dependencies
+      - name: Setup
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libfontconfig1 unzip wget
-
-      - name: Download & Install Godot Engine & Templates
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          if [ "$HOME" != "/root" ] && [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable" ]; then cp -r "/root/.local/share/godot/export_templates/${GODOT_VERSION}.stable" ~/.local/share/godot/export_templates/; fi
+      - name: Web Build
         run: |
-          # Format template folder name (converts '3.6.3-stable' to '3.6.3.stable')
-          GODOT_TEMPLATE_VER=$(echo "${GODOT_VERSION}" | tr '-' '.')
-
-          mkdir -p ~/.local/bin
-          TEMPLATE_DIR="$HOME/.local/share/godot/templates/${GODOT_TEMPLATE_VER}"
-          mkdir -p "$TEMPLATE_DIR"
-
-          # 1. Download Godot 3 Headless Binary (Corrected URL pattern)
-          wget --show-progress -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_headless.64.zip"
-          unzip -q "Godot_v${GODOT_VERSION}_headless.64.zip"
-          mv "Godot_v${GODOT_VERSION}_headless.64" ~/.local/bin/godot
-          chmod +x ~/.local/bin/godot
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-          # 2. Download Export Templates
-          wget --show-progress -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
-          unzip -q "Godot_v${GODOT_VERSION}_export_templates.tpz"
-          mv templates/* "$TEMPLATE_DIR/"
-
-          # Clean up
-          rm -rf templates "Godot_v${GODOT_VERSION}_export_templates.tpz" "Godot_v${GODOT_VERSION}_headless.64.zip"
-
-      - name: Create Build Directory
-        run: mkdir -p ${BUILD_DIR}
-
-      - name: Export Web Game
-        run: godot --headless --export-release "Web" ${BUILD_DIR}/index.html
-
-      - name: Publish to itch.io via Butler
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
-          CHANNEL: web
-          ITCH_GAME: ${{ secrets.ITCHIO_GAME }}
-          ITCH_USER: ${{ secrets.ITCHIO_USERNAME }}
-          PACKAGE: ${{ env.BUILD_DIR }}
+          mkdir -v -p build/web
+          EXPORT_DIR="$(readlink -f build)"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Web" "$EXPORT_DIR/web/index.html"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+  deploy:
+    name: Upload to web
+    runs-on: ubuntu-latest
+    needs:
+      - export-web
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - artifact: web
+            channel: html5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/${{ matrix.artifact }}
+      - uses: KikimoraGames/itch-publish@v0.0.3
+        with:
+          butlerApiKey: ${{ secrets.BUTLER_API_KEY }}
+          gameData: ./build/${{ matrix.artifact }}
+          itchUsername: ${{ secrets.ITCHIO_USERNAME }}
+          itchGameId: ${{ secrets.ITCHIO_GAME }}
+          buildChannel: ${{ matrix.channel }}
