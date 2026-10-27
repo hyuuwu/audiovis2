@@ -1,0 +1,250 @@
+[gd_scene format=3 uid="uid://dfx3gpcgsetuq"]
+
+[ext_resource type="Script" uid="uid://dr7tby5hl0dwu" path="res://test.gd" id="1_pfiqw"]
+[ext_resource type="AudioStream" uid="uid://bcmy8g8ju47bu" path="res://test.mp3" id="2_o2n7e"]
+
+[node name="Node2D" type="Control" unique_id=880124210 node_paths=PackedStringArray("audio_player", "bar_container", "file_dialog", "open_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1152.0
+offset_bottom = -648.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pfiqw")
+audio_player = NodePath("AudioStreamPlayer")
+bar_container = NodePath("HBoxContainer")
+file_dialog = NodePath("FileDialog")
+open_button = NodePath("Button")
+metadata/_edit_horizontal_guides_ = [-26.0]
+
+[node name="Button" type="Button" parent="." unique_id=1446325214]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 556.0
+offset_top = 323.0
+offset_right = 669.0
+offset_bottom = 354.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "open audio :3"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1140689300]
+stream = ExtResource("2_o2n7e")
+bus = &"analyzer"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=930374886]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 424.0
+offset_right = 1147.0
+offset_bottom = 606.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 9
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer" unique_id=194545942]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect2" type="ColorRect" parent="HBoxContainer" unique_id=1542308991]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect3" type="ColorRect" parent="HBoxContainer" unique_id=1459536044]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect4" type="ColorRect" parent="HBoxContainer" unique_id=1599799318]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect5" type="ColorRect" parent="HBoxContainer" unique_id=838454389]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect6" type="ColorRect" parent="HBoxContainer" unique_id=1610219300]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect7" type="ColorRect" parent="HBoxContainer" unique_id=766115940]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect8" type="ColorRect" parent="HBoxContainer" unique_id=1117363592]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect9" type="ColorRect" parent="HBoxContainer" unique_id=923652228]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect10" type="ColorRect" parent="HBoxContainer" unique_id=378190493]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect11" type="ColorRect" parent="HBoxContainer" unique_id=1380075254]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect12" type="ColorRect" parent="HBoxContainer" unique_id=66131082]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect13" type="ColorRect" parent="HBoxContainer" unique_id=1813576253]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect14" type="ColorRect" parent="HBoxContainer" unique_id=358379833]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect15" type="ColorRect" parent="HBoxContainer" unique_id=1951715021]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect16" type="ColorRect" parent="HBoxContainer" unique_id=1146293892]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect17" type="ColorRect" parent="HBoxContainer" unique_id=1098489964]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect18" type="ColorRect" parent="HBoxContainer" unique_id=1140361398]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect19" type="ColorRect" parent="HBoxContainer" unique_id=1116051718]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect20" type="ColorRect" parent="HBoxContainer" unique_id=525657319]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect21" type="ColorRect" parent="HBoxContainer" unique_id=942051327]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect22" type="ColorRect" parent="HBoxContainer" unique_id=1751924172]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect23" type="ColorRect" parent="HBoxContainer" unique_id=1547803897]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect24" type="ColorRect" parent="HBoxContainer" unique_id=1301853921]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect25" type="ColorRect" parent="HBoxContainer" unique_id=1790691589]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect26" type="ColorRect" parent="HBoxContainer" unique_id=1503179804]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect27" type="ColorRect" parent="HBoxContainer" unique_id=726301640]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect28" type="ColorRect" parent="HBoxContainer" unique_id=517005888]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect29" type="ColorRect" parent="HBoxContainer" unique_id=1293832172]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect30" type="ColorRect" parent="HBoxContainer" unique_id=1277515174]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect31" type="ColorRect" parent="HBoxContainer" unique_id=527562633]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="ColorRect32" type="ColorRect" parent="HBoxContainer" unique_id=559206456]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1226933636]
+title = "Open a File"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.mp3, *.ogg, *.wav ; Audio Files")
